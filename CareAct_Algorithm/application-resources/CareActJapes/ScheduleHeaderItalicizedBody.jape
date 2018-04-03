@@ -1,0 +1,51 @@
+Imports: {
+import static gate.Utils.*;
+
+
+}
+Phase:ContentOfASchedule
+Input: ScheduleHeaderItalicized Sentence Ignore
+Options: control = appelt debug = true
+Rule: ContentOfASchedule
+(
+	{ScheduleHeaderItalicized}({Sentence, !ScheduleHeaderItalicized, !Ignore})+
+	
+
+)
+:ScheduleItalicizedBody
+-->
+:ScheduleItalicizedBody.ScheduleItalicizedBody= {body=:ScheduleItalicizedBody@cleanString, title = :ScheduleItalicizedBody.ScheduleHeaderItalicized@cleanString},
+:ScheduleItalicizedBody
+{
+	AnnotationSet bc = bindings.get("ScheduleItalicizedBody");
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			
+			List<String> fullBodyList = new ArrayList<String>();
+			
+			AnnotationSet scedBody = bc.get("ScheduleHeaderItalicized");
+			AnnotationSet scedSent = bc.get("Sentence");
+			
+			String sentBody = cleanStringFor(doc, scedSent);
+			
+			for(Annotation ann: scedSent)
+			{
+				String sentForList = cleanStringFor(doc, ann);
+				fullBodyList.add(sentForList);
+			}
+			
+			for(Annotation annot: scedBody)
+			{
+				FeatureMap fmap = annot.getFeatures();
+				fmap.put("body", sentBody);
+				fmap.put("bodyAsList", fullBodyList);
+			}
+			
+			
+		}
+	}
+
+}

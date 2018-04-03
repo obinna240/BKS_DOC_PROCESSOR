@@ -1,0 +1,58 @@
+Imports: {
+import static gate.Utils.*;
+
+}
+Phase:CareActHeaderContent
+Input:CareActHeader ScheduleHeader Sentence 
+Options: control = appelt debug = true
+Rule: CareActHeaderContent
+(
+{CareActHeader}({Sentence, !ScheduleHeader})+
+):CareActHeaderContent
+-->
+:CareActHeaderContent.CareActHeaderContent = {body= :CareActHeaderContent@cleanString},
+:CareActHeaderContent
+{
+
+	AnnotationSet shcontent = bindings.get("CareActHeaderContent");
+	if(shcontent!= null)
+	{
+		if(!shcontent.isEmpty())
+		{
+			AnnotationSet sent = shcontent.get("Sentence");
+			if(sent!=null)
+			{
+				if(!sent.isEmpty())
+				{
+					AnnotationSet as = inputAS.get("CareActPart").getContained(start(sent), end(sent));
+					if(as!=null)
+					{
+						if(!as.isEmpty())
+						{
+							Integer sizeOfParts = as.size();
+							AnnotationSet ast = shcontent.get("CareActHeader");
+							if(ast!=null)
+							{
+								if(!ast.isEmpty())
+								{
+									ast.iterator().next().getFeatures().put("nosOfParts", sizeOfParts);
+								}
+							}
+						}
+					}
+				
+					Iterator<Annotation> iter = as.iterator();
+					while(iter.hasNext())
+					{
+						iter.next().getFeatures().put("part", "care act");
+					}
+								
+				}
+			
+			}
+		}
+	}
+	
+}
+
+

@@ -1,0 +1,62 @@
+Imports: {
+import static gate.Utils.*;
+import org.apache.commons.lang.*;
+import java.util.UUID;
+}
+Phase:TableIdentifier
+Input:table
+Options: control = appelt debug = true
+Rule: TableIdentifier
+({table}):table
+-->
+:table
+{
+	AnnotationSet tableSet = bindings.get("table");
+	FeatureMap fmap = Factory.newFeatureMap();
+	
+	String tableId = UUID.randomUUID().toString();
+	fmap.put("tableId", tableId);
+	
+	
+	
+	AnnotationSet allTableRows = inputAS.get("tr").getContained(start(tableAnnots), end(tableAnnots));
+	for(Annotation anno:allTableRows)
+	{
+		FeatureMap rowMap = Factory.newFeatureMap();
+		rowMap.put("tableId", tableId);
+		String rowString = cleanStringFor(doc, anno);
+		if(StringUtils.isNotBlank(rowString))
+		{
+			rowMap.put("rowString", rowString);
+			
+		}
+		
+		AnnotationSet allTableDime = inputAS.get("td").getContained(start(anno), end(anno));
+		Integer tdSize = allTableDime.size();
+		if(allTableDime!=null)
+		{
+			if(!allTableDime.isEmpty())
+			{
+				rowMap.put("nosOfTDs", tdSize);
+				for(Annotation annd:allTableDime)
+				{
+					String tdString = cleanStringFor(doc, annd);
+					if(StringUtils.isNotBlank(tdString))
+					{
+						FeatureMap tdMap = Factory.newFeatureMap();
+						tdMap.put("tableId", tableId);
+						tdMap.put("rowString", rowString);
+						tdMap.put("tdValue", tdString);
+						outputAS.add(annd.getStartNode(),annd.getEndNode(), "TableDef", tdMap);
+					}
+				}
+			}
+		}
+		
+		outputAS.add(anno.getStartNode(),anno.getEndNode(), "TableRow", rowMap);
+	}
+		
+	outputAS.add(tableSet.firstNode(),tableSet.lastNode(), "TableD", fmap);
+	
+}
+ 

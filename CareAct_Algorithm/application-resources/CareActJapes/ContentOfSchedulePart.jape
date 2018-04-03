@@ -1,0 +1,108 @@
+Imports: {
+import static gate.Utils.*;
+
+}
+Phase:ContentOfASchedule
+Input: SchedulePart Sentence Ignore
+Options: control = appelt debug = true
+Rule: ContentOfASchedule
+(
+	{SchedulePart.level=="1"}({Sentence, !SchedulePart.level=="1", !Ignore})+
+	
+)
+:ScheduleContentBody
+-->
+:ScheduleContentBody.SchedulePartBody= {body= :ScheduleContentBody@cleanString},
+:ScheduleContentBody
+{
+	AnnotationSet bc = bindings.get("ScheduleContentBody");
+	List<String> impwords = new ArrayList<String>();
+	List<String> otherPartsList = new ArrayList<String>();
+	List<String> fullScheduleBodyList = new ArrayList<String>();
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			
+			AnnotationSet scedBody = bc.get("SchedulePart");
+			String spart = cleanStringFor(doc, scedBody);
+			
+			AnnotationSet sent = bc.get("Sentence");
+			
+			if(sent!=null)
+			{
+				if(!sent.isEmpty())
+				{
+					for(Annotation salist:sent)
+					{
+						String completeSentenceSchedule = cleanStringFor(doc,salist);
+						fullScheduleBodyList.add(completeSentenceSchedule);
+					}
+				
+					AnnotationSet italicized = inputAS.get("ScheduleHeaderItalicized").getContained(start(sent),end(sent));
+					
+					if(italicized!=null)
+					{
+						if(!italicized.isEmpty())
+						{
+							for(Annotation annota:italicized)
+							{
+								String itWords = cleanStringFor(doc, annota);
+								if(itWords!=null)
+								{
+									impwords.add(itWords);
+								}
+								FeatureMap fmm = annota.getFeatures();
+								fmm.put("belongsTo_Schedule_Part_1", spart);
+								fmm.put("fullScheduleBody_List", fullScheduleBodyList);
+							}
+						}
+					}
+					
+					AnnotationSet otherParts = inputAS.get("SchedulePart").getContained(start(sent),end(sent));
+					
+					if(otherParts!=null)
+					{
+						if(!otherParts.isEmpty())
+						{
+							for(Annotation annotaO:otherParts)
+							{
+								String oWords = cleanStringFor(doc, annotaO);
+								if(oWords!=null)
+								{
+									otherPartsList.add(oWords);
+								}
+								FeatureMap fmo = annotaO.getFeatures();
+								fmo.put("belongsTo_Schedule_Part_1", spart);
+								fmo.put("fullScheduleBody_List", fullScheduleBodyList);
+							}
+						}
+					}
+					
+				}
+			}
+			
+			if(scedBody!=null)
+			{
+				if(!scedBody.isEmpty())
+				{
+							
+					Iterator<Annotation> iter = scedBody.iterator();
+					while(iter.hasNext())
+					{
+						//FeatureMap fmap = iter.next().getFeatures();
+						Annotation blaS = iter.next();
+						FeatureMap fmap = blaS.getFeatures();
+						fmap.put("otherPartList", otherPartsList);
+						fmap.put("importantItalicizedHeaders", impwords);
+						
+					}
+				}
+			}
+			
+			
+		}
+	}
+
+}

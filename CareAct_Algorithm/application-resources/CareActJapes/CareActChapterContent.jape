@@ -1,0 +1,78 @@
+Imports: {
+import static gate.Utils.*;
+}
+Phase:CareActPartFeatures
+Input: CareActPartChapter CareActItalicizedContentBody
+Options: control = appelt debug = true
+Rule: CareActPartFeatures
+(
+	{CareActPartChapter}({CareActItalicizedContentBody})+:DD
+	
+
+)
+:Cc
+-->
+:Cc.CareActChapterContent={body = :DD@cleanString},
+:Cc
+{
+	AnnotationSet bc = bindings.get("Cc");
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			AnnotationSet allSub1 = inputAS.get("Sentence").getContained(start(bc), end(bc));
+			List<String> bcontent = new ArrayList<String>();
+			
+			String fullPartString = cleanStringFor(doc, bc);
+			
+			AnnotationSet cact = bc.get("CareActPartChapter");
+			AnnotationSet cacti = bc.get("CareActItalicizedContentBody");
+			
+			String cactStr = cleanStringFor(doc, cact);
+			
+			if(cact!=null)
+			{
+				if(!cact.isEmpty())
+				{
+					
+					for(Annotation acac:cact)
+					{
+						FeatureMap f = acac.getFeatures();
+						f.put("body", fullPartString);
+						if(allSub1!=null)
+						{
+							if(allSub1.isEmpty())
+							{
+								for(Annotation ama:allSub1)
+								{
+									String v = cleanStringFor(doc,ama);
+									bcontent.add(v);
+									
+								}
+								
+							}
+						}
+						f.put("bodyAsList", bcontent);
+						
+					}
+					
+				}
+			}
+			
+			if(cacti!=null)
+			{
+				if(!cacti.isEmpty())
+				{
+					for(Annotation acaci:cacti)
+					{
+						FeatureMap cfmapi = acaci.getFeatures();
+						cfmapi.put("chapterName", cactStr );
+						cfmapi.put("body", cleanStringFor(doc, acaci));
+					}
+				}
+			}
+		}
+	}
+
+}

@@ -1,0 +1,89 @@
+Imports: {
+import static gate.Utils.*;
+
+
+}
+Phase:CareActItalicizedHeaderContent
+Input: CareActItalicizedHeader  CareActSubHeadingContent CareActPart CareActPartChapter
+Options: control = appelt debug = true
+Rule: CareActItalicizedHeader
+(
+	{CareActItalicizedHeader}({CareActSubHeadingContent, !CareActPart, !CareActPartChapter})+
+	
+
+)
+:CareActItalicizedHeaders
+-->
+:CareActItalicizedHeaders.CareActItalicizedContentBody={},
+:CareActItalicizedHeaders
+{
+	AnnotationSet bc = bindings.get("CareActItalicizedHeaders");
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			
+			List<String> listOfContent = new ArrayList<String>();
+			String bodyOfContent = cleanStringFor(doc, bc);
+			
+			AnnotationSet ccontent = bc.get("CareActSubHeadingContent");
+			AnnotationSet cheader = bc.get("CareActItalicizedHeader");
+			
+			String cHeaderString = cleanStringFor(doc, cheader);
+			
+			String bodyOfContents = "";
+			
+			if(ccontent!=null)
+			{
+				if(!ccontent.isEmpty())
+				{
+					bodyOfContents = cleanStringFor(doc, ccontent);
+					for(Annotation annota:ccontent)
+					{
+						String slist = cleanStringFor(doc, annota);
+						listOfContent.add(slist);
+					}
+				}
+			}
+			
+			FeatureMap fmapForItalic = Factory.newFeatureMap();
+			fmapForItalic.put("bodyOfContent", bodyOfContents);
+			fmapForItalic.put("bodyOfContentAsList", listOfContent);
+			
+			AnnotationSet allSub = inputAS.get("CareActSubHeading").getContained(start(ccontent), end(ccontent));
+			
+			List<String> listOfSbHeaders = new ArrayList<String>();
+			
+			for(Annotation hanno:cheader)
+			{
+				FeatureMap fham = hanno.getFeatures();
+				
+				if(allSub!=null)
+				{
+					if(!allSub.isEmpty())
+					{
+						Integer aSize = allSub.size();
+						fham.put("numberOfSubHeaders", aSize);
+						for(Annotation asannot:allSub)
+						{
+							String allSubString = cleanStringFor(doc, asannot);
+							listOfSbHeaders.add(allSubString);
+							FeatureMap asafmap = asannot.getFeatures();
+							asafmap.put("italicizedHeader", cHeaderString);
+						}
+						fham.put("listOfSubHeaders", listOfSbHeaders);
+					}
+				}
+				
+				fham.put("body", bodyOfContents);
+				fham.put("bodyAsList", listOfContent);
+			}
+			
+			
+			
+		}
+	}
+	
+
+}

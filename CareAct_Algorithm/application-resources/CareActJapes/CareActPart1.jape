@@ -1,0 +1,11 @@
+Phase:CareActPart1
+Input:h2
+Options: control = appelt debug = true
+Rule: CareActSchedule
+(
+{h2.class == "LegPartFirst"}
+):CareActPart1
+-->
+:CareActPart1.CareActPart= {CareActPart = "Part 1", title = :CareActPart1@cleanString}
+
+

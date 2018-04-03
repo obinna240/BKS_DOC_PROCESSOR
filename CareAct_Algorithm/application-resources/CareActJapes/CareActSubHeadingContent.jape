@@ -1,0 +1,67 @@
+Imports: {
+import static gate.Utils.*;
+
+
+}
+Phase:CareActSubHeadingContent
+Input: CareActSubHeading p Ignore ScheduleHeader
+Options: control = appelt debug = true
+Rule: CareActSubHeadingContent
+(
+	{CareActSubHeading}({ !ScheduleHeader, !Ignore,p})+
+	
+
+)
+:CareActSubHeadingContent
+-->
+:CareActSubHeadingContent
+{
+	AnnotationSet bc = bindings.get("CareActSubHeadingContent");
+	List<String> listOfSentences = new ArrayList<String>();
+	String valueOfPara = "";
+	FeatureMap careActSubHeadingContentMap = Factory.newFeatureMap();
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			AnnotationSet cashead = bc.get("CareActSubHeading");
+			AnnotationSet para = bc.get("p");
+			
+			if(para!=null)
+			{
+				if(!para.isEmpty())
+				{
+					valueOfPara = cleanStringFor(doc, para);
+					for(Annotation apara:para)
+					{
+						String paraVal = cleanStringFor(doc, apara);
+						listOfSentences.add(paraVal);
+					}
+				}
+			}
+			
+			if(cashead!=null)
+			{
+				if(!cashead.isEmpty())
+				{
+					for(Annotation aCash:cashead)
+					{
+						FeatureMap fmap = aCash.getFeatures();
+						fmap.put("bodyAsList", listOfSentences);
+						fmap.put("body", valueOfPara);
+						
+						careActSubHeadingContentMap.put("bodyAsList", listOfSentences);
+						careActSubHeadingContentMap.put("body", valueOfPara);
+					}
+				
+					String casheadStringVal = cleanStringFor(doc, cashead);
+					careActSubHeadingContentMap.put("title", casheadStringVal);
+				
+				}
+			}
+			
+			outputAS.add(bc.firstNode(), bc.lastNode(), "CareActSubHeadingContent", careActSubHeadingContentMap);
+		}
+	}
+}

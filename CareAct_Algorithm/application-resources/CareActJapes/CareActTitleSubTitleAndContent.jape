@@ -1,0 +1,43 @@
+Imports: {
+import static gate.Utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+}
+
+Phase:CareActBodyIdentifier2
+Input:CareActSubTitleAndContent CareActPartFunctionHeader
+Options: control = appelt debug = true
+Rule: CParaAct
+(
+{CareActPartFunctionHeader}({CareActSubTitleAndContent})+
+)
+:cpara
+
+-->
+:cpara.CareAct_Title_Sub_And_Content= {Title=:cpara.CareActPartFunctionHeader@cleanString},
+:cpara
+{
+	AnnotationSet ans = bindings.get("cpara");
+	AnnotationSet asUB = ans.get("CareActSubTitleAndContent");
+	
+	AnnotationSet functionHeader= ans.get("CareActPartFunctionHeader");
+	
+	List<String> jList = new ArrayList<String>();
+	FeatureMap fmm = Factory.newFeatureMap();
+	for(Annotation ann:asUB)
+	{
+		FeatureMap fmap = ann.getFeatures();
+		String f_map = (String)fmap.get("Subtitle");
+		
+		jList.add(f_map);
+	}
+	fmm.put("listOfSubTites", jList);
+	
+	FeatureMap fmmp = Factory.newFeatureMap();
+	
+	fmmp.put("listOfSubTites", jList);
+	fmmp.put("title", cleanStringFor(doc,ans));
+	
+	outputAS.add(functionHeader.firstNode(), functionHeader.lastNode(), "I_Title", fmm);
+	outputAS.add(ans.firstNode(), ans.lastNode(), "I_Title_Content", fmmp);
+}

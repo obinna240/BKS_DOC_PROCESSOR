@@ -1,0 +1,74 @@
+Imports: {
+import static gate.Utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+}
+
+Phase:CareActBodyIdentifier
+Input:movedBody
+Options: control = appelt debug = true
+Rule: CareActBodyIdentifier
+(
+{movedBody}
+)
+:careActBodyIdentifier
+
+-->
+:careActBodyIdentifier.YYYYYYYYYY= {},
+:careActBodyIdentifier
+{
+	AnnotationSet body = bindings.get("careActBodyIdentifier");
+	Long startOfBodyAnnotation = start(body);
+	Long endOfBodyAnnotation = end(body);
+		
+		
+	//AnnotationSet careActHeader = inputAS.getCovering("CareActHeader", startOfBodyAnnotation, endOfBodyAnnotation);
+	//AnnotationSet scheduleHeader = inputAS.getCovering("ScheduleHeader", startOfBodyAnnotation, endOfBodyAnnotation);
+	
+	//careActHeader = outputAS.getContained( startOfBodyAnnotation, endOfBodyAnnotation);
+	
+	AnnotationSet careActHeader = inputAS.get("CareActHeader").getContained(startOfBodyAnnotation,endOfBodyAnnotation);
+	AnnotationSet scheduleHeader = inputAS.get("ScheduleHeader").getContained(startOfBodyAnnotation,endOfBodyAnnotation);
+		
+	
+	Long startOfCareActHeader = start(careActHeader);
+	Long endOfCareActHeader = end(careActHeader);
+	
+	Long startOfScheduleHeader = start(scheduleHeader);
+	Long endOfScheduleHeader = end(scheduleHeader);
+			
+	AnnotationSet careActPara = inputAS.get("DebateParagraph").getContained(endOfCareActHeader,startOfScheduleHeader);
+	if(CollectionUtils.isNotEmpty(careActPara))
+	{
+		System.out.println("YESSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+		for(Annotation annota:careActPara)
+		{
+		//	System.out.println(annota);
+			outputAS.add(annota.getStartNode(),annota.getEndNode(), "ParagraphOfCareAct", null);
+		}
+	}
+	
+	//System.out.println(careActPara+" xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+	
+	//System.out.println(""+" lllllllllllllllllll");
+	//System.out.println(endOfScheduleHeader+" xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+	//System.out.println(""+" lllllllllllllllllll");
+	
+	//Long startOfCareActHeader = start(careActHeader); //WE GET THE START OF THE CARE ACT HEADER
+	//Long endOfCareActHeader = end(careActHeader);	//WE GET THE START OF THE CARE ACT HEADER	
+	
+	//Long startOfScheduleHeader = start(scheduleHeader);
+	//Long endOfScheduleHeader = end(scheduleHeader);
+	
+	//AnnotationSet annotSetBody = inputAS.getCovering("DebateParagraph", endOfCareActHeader, startOfScheduleHeader);
+	
+	//if(CollectionUtils.isNotEmpty(annotSetBody))
+	//{
+	//	for(Annotation annota:annotSetBody)
+	//	{
+	//		outputAS.add(annota.getStartNode(),annota.getEndNode(), "ParagraphOfCareAct", null);
+	//	}
+	//}
+	
+}
+

@@ -1,0 +1,45 @@
+Imports: {
+import static gate.Utils.*;
+
+}
+Phase:CareActScheduleHeaderContent
+Input:ScheduleHeader Sentence 
+Options: control = appelt debug = true
+Rule: CareActSchedule
+(
+{ScheduleHeader}({Sentence})+
+):ScheduleHeaderContent
+-->
+:ScheduleHeaderContent
+{
+	AnnotationSet shcontent = bindings.get("ScheduleHeaderContent");
+	if(shcontent!=null)
+	{
+		if(!shcontent.isEmpty())
+		{
+			AnnotationSet sent = shcontent.get("Sentence");
+			if(sent!=null)
+			{
+				if(!sent.isEmpty())
+				{
+					List<String> list = new ArrayList<String>();
+					
+					String sStr = cleanStringFor(doc, sent);
+					for(Annotation a:sent)
+					{
+						list.add(cleanStringFor(doc, a));
+					}
+					
+					AnnotationSet scentA = shcontent.get("ScheduleHeader");
+					FeatureMap fmap = scentA.iterator().next().getFeatures();
+					fmap.put("body", sStr);
+					fmap.put("bodyAsList", list);
+								
+				}
+			}
+			
+		}
+	}
+}
+
+

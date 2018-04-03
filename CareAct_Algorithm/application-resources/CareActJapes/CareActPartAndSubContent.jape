@@ -1,0 +1,65 @@
+Imports: {
+import static gate.Utils.*;
+
+}
+Phase:CareActPartSubHeader
+Input: CareActPart CareActPartChapter CareActItalicizedContentBody
+Options: control = appelt debug = true
+Rule: CareActItalicizedHeader
+(
+	{CareActPart}({CareActItalicizedContentBody, !CareActPart, !CareActPartChapter})+
+	
+
+)
+:CareActSubHeadingContentPlus
+-->
+:CareActSubHeadingContentPlus.CareActPartContent={body=:CareActSubHeadingContentPlus@cleanString},
+:CareActSubHeadingContentPlus
+{
+	AnnotationSet bc = bindings.get("CareActSubHeadingContentPlus");
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			AnnotationSet ccontent = bc.get("CareActSubHeadingContent");
+			AnnotationSet cPart = bc.get("CareActPart");
+			String partName = cleanStringFor(doc,cPart);
+			
+			if(ccontent!=null)
+			{
+				if(!ccontent.isEmpty())
+				{
+					AnnotationSet allSub = inputAS.get("CareActSubHeading").getContained(start(ccontent), end(ccontent));
+					
+					List<String> listOfSbHeaders = new ArrayList<String>();
+					for(Annotation substitut:allSub)
+					{
+						String sas = cleanStringFor(doc, substitut);
+						listOfSbHeaders.add(sas);
+						FeatureMap substiMap = substitut.getFeatures();
+						substiMap.put("PART_OF",partName);
+						substiMap.put("italicizedHeader","");
+				
+					}
+					
+					if(allSub!=null)
+					{
+						if(!allSub.isEmpty())
+						{
+							for(Annotation axnoot:cPart)
+							{
+								FeatureMap fmp = axnoot.getFeatures();
+								fmp.put("numberOfSubHeaders", allSub.size());
+								fmp.put("listOfSubHeaders", listOfSbHeaders);
+								fmp.put("partType","last_no_italics");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+}

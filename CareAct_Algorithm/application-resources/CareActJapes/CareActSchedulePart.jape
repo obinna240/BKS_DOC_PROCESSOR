@@ -1,0 +1,75 @@
+Phase:CareActSchedulePart1
+Input:h2 h3 h4 h5
+Options: control = appelt debug = true
+Rule: CareActSchedule
+(
+{h2.class == "LegScheduleFirst"}
+):CareActSchedulePart
+-->
+:CareActSchedulePart.SchedulePart= {CareActSchedulePart = "first", title = :CareActSchedulePart@cleanString, level="1"}
+
+
+Rule: CareActSchedulePart2
+(
+{h2.class == "LegSchedule"}
+):CareActSchedulePart
+-->
+:CareActSchedulePart.SchedulePart= {CareActSchedulePart = "Not First", title = :CareActSchedulePart@cleanString, level="1"}
+
+Rule: CareActSchedulePartHeader
+(
+{h3.class == "LegClearFix LegSP1GroupTitle"}
+):ScheduleHeaderItalicized
+-->
+:ScheduleHeaderItalicized.ScheduleHeaderItalicized= {title = :ScheduleHeaderItalicized@cleanString, level="1"}
+
+Rule: SchedulerItalics
+(
+{h4.class == "LegClearFix LegSP1GroupTitle"}
+):ScheduleHeaderItalicized
+-->
+:ScheduleHeaderItalicized.ScheduleHeaderItalicized= {title = :ScheduleHeaderItalicized@cleanString, level="2"}
+
+Rule: SchedulerItalics2
+(
+{h4.class == "LegClearFix LegSP1GroupTitleFirst"}
+):ScheduleHeaderItalicized
+-->
+:ScheduleHeaderItalicized.ScheduleHeaderItalicized= {title = :ScheduleHeaderItalicized@cleanString, level="2"}
+
+Rule: CareActSchedulePartHeaderPart
+(
+{h3.class == "LegSchedulePartFirst"}
+):CareActSchedulePartHeaderPart
+-->
+:CareActSchedulePartHeaderPart.SchedulePart= {CareActSchedulePart = "first", title = :CareActSchedulePartHeaderPart@cleanString, level="2"}
+
+Rule: CareActSchedulePartHeaderPart2
+(
+{h3.class == "LegSchedulePart"}
+):CareActSchedulePartHeaderPart
+-->
+:CareActSchedulePartHeaderPart.SchedulePart= {CareActSchedulePart = " ", title = :CareActSchedulePartHeaderPart@cleanString, level="2"}
+
+Rule: CareActSchedulePartOtherItalicized
+(
+{h5.class == "LegSP1GroupTitleC1Amend"}
+):CareActSchedulePartOtherItalicized
+-->
+:CareActSchedulePartOtherItalicized.ScheduleHeaderItalicized= { title = :CareActSchedulePartOtherItalicized@cleanString, level=" "}
+
+/**
+Rule: CareActSchedulePartOtherItalicized2
+(
+{h5.class == "LegSP1GroupTitleFirstC1Amend"}
+):CareActSchedulePartOtherItalicized
+-->
+:CareActSchedulePartOtherItalicized.CareActSchedulePartOtherItalicized= { title = :CareActSchedulePartOtherItalicized@cleanString}
+*/
+
+Rule: CareActScheduleUnderTitle
+(
+{h4.class == "LegScheduleFirst"}
+):CareActScheduleUnderTitle
+-->
+:CareActScheduleUnderTitle.ScheduleHeaderItalicized= {title = :CareActScheduleUnderTitle@cleanString, level=" "}

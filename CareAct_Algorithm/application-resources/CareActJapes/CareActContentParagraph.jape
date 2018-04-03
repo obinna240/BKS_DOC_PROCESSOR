@@ -1,0 +1,266 @@
+Imports: {
+import static gate.Utils.*;
+
+
+}
+Phase:CareActParas
+Input:p
+Options: control = appelt debug = true
+Rule: ParagraphGetter
+(
+{p}
+):CareActParas
+-->
+:CareActParas
+{
+	AnnotationSet careActPara = bindings.get("CareActParas");
+	
+	if(!careActPara.isEmpty())
+	{
+		String actualStr = cleanStringFor(doc,careActPara); 
+		FeatureMap fmap = careActPara.iterator().next().getFeatures();
+		if(fmap!=null)
+		{
+			if(!fmap.isEmpty())
+			{
+				String classValue = (String)fmap.get("class");
+				if(classValue.equalsIgnoreCase("LegLongTitle"))
+				{
+					FeatureMap p1 = Factory.newFeatureMap();
+					p1.put("paraFeature","LegLongTitle");
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "IntroductionToTheCareAct", p1);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegDateOfEnactment"))
+				{
+					FeatureMap de = Factory.newFeatureMap();
+					de.put("paraFeature","LegDateOfEnactment");
+					de.put("DateOfEnactment",actualStr);
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DateOfEnactment", de);
+					//System.out.println(fmap);
+				}
+				else if(classValue.equalsIgnoreCase("LegClearFix LegP2Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegP2Container");
+					paraContainer.put("contentType","Level1");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number");
+					paraContainer.put("careActPart","notSchedule"); //The part of the Care Act e.g Schedule or Care Act or both
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegClearFix LegP3Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegP3Container");
+					paraContainer.put("contentType","Level2");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number-alphabet");
+					paraContainer.put("careActPart","notSchedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegClearFix LegP4Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegP4Container");
+					paraContainer.put("contentType","Level3");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","roman-numeral");
+					paraContainer.put("careActPart","notSchedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				/**
+				else if(classValue.equalsIgnoreCase("LegClearFix LegP4Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegP4Container");
+					paraContainer.put("contentType","Level3");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","roman-numeral");
+					paraContainer.put("careActPart","notSchedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				*/
+				else if(classValue.equalsIgnoreCase("LegRHS LegP2Text"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegRHS LegP2Text");
+					paraContainer.put("contentType","Level1");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number");
+					paraContainer.put("careActPart","both"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegRHS LegP1Text"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegRHS LegP1Text");
+					paraContainer.put("contentType","Level1");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number");
+					paraContainer.put("careActPart","both"); 
+					paraContainer.put("explanatoryNoteRequired","YES"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegListTextStandard LegLevel3"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegListTextStandard LegLevel3");
+					paraContainer.put("contentType","LegistlationList_Level1");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","list");
+					paraContainer.put("careActPart","both"); 
+					
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegListTextStandard LegLevel4"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegListTextStandard LegLevel4");
+					paraContainer.put("contentType","LegistlationList_Level2");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","list");
+					paraContainer.put("careActPart","both"); 
+					
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegListTextStandard LegLevel3C1Amend"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegListTextStandard LegLevel3C1Amend");
+					paraContainer.put("contentType","LegistlationList_Level3");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","list");
+					paraContainer.put("careActPart","both"); 
+					paraContainer.put("Amendment","YES"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegListTextStandard LegLevel4C1Amend"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegListTextStandard LegLevel4C1Amend");
+					paraContainer.put("contentType","LegistlationList_Level4");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","list");
+					paraContainer.put("careActPart","both"); 
+					paraContainer.put("Amendment","YES"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegRHS LegP2TextC1Amend"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegRHS LegP2TextC1Amend");
+					paraContainer.put("contentType","Level1");
+					paraContainer.put("paraValue",actualStr);
+					
+					paraContainer.put("careActPart","both"); 
+					paraContainer.put("Amendment","YES"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegArticleRef"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegArticleRef");
+					paraContainer.put("contentType","Article");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("careActPart","both"); 
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegClearFix LegSP2Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegClearFix LegSP2Container");
+					paraContainer.put("contentType","Level1");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number");
+					paraContainer.put("careActPart","Schedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegClearFix LegSP3Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegClearFix LegSP3Container");
+					paraContainer.put("contentType","Level2");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number-alphabet");
+					paraContainer.put("careActPart","Schedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+				else if(classValue.equalsIgnoreCase("LegClearFix LegSP4Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegClearFix LegSP4Container");
+					paraContainer.put("contentType","Level3");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","roman-numeral");
+					paraContainer.put("careActPart","Schedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegClearFix LegSP1Container"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegClearFix LegSP1Container");
+					paraContainer.put("contentType","Level0");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","number");
+					paraContainer.put("careActPart","Schedule"); 
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				else if(classValue.equalsIgnoreCase("LegListTextStandard LegLevel3C3Amend"))
+				{
+					FeatureMap paraContainer = Factory.newFeatureMap();
+					paraContainer.put("paraFeature","LegListTextStandard LegLevel3C3Amend");
+					paraContainer.put("contentType","LegistlationList_Level3");
+					paraContainer.put("paraValue",actualStr);
+					paraContainer.put("clue","list");
+					paraContainer.put("careActPart","both"); 
+					paraContainer.put("Amendment","YES");  
+					
+					outputAS.add(careActPara.firstNode(), careActPara.lastNode(), "DebateParagraph", paraContainer);
+					
+				}
+				
+			}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+Phase:BoilerPlate
+Input: li Sentence a
+Options: control = appelt debug = true
+Rule: RemoveUnwanted
+(
+	{li.class=="prev"}{li.class=="next"}{a.href=="#top"}({Sentence})+
+	
+
+)
+:contentAfter
+-->
+:contentAfter.Ignore = {}

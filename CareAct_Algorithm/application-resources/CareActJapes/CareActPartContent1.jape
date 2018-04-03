@@ -1,0 +1,67 @@
+Imports: {
+import static gate.Utils.*;
+
+
+}
+Phase:CareActPartFeatures
+Input: CareActPart Sentence Ignore
+Options: control = appelt debug = true
+Rule: CareActPartFeatures
+(
+	{CareActPart}({Sentence, !Ignore, !CareActPart})+
+	
+
+)
+:CareActPartFeatures
+-->
+
+:CareActPartFeatures
+{
+	AnnotationSet bc = bindings.get("CareActPartFeatures");
+	
+	if(bc!=null)
+	{
+		if(!bc.isEmpty())
+		{
+			String fullPartString = cleanStringFor(doc, bc);
+			AnnotationSet sent = bc.get("Sentence");
+			AnnotationSet partNameSet = bc.get("CareActPart");
+			String partName = cleanStringFor(doc,partNameSet); 
+			
+			if(sent!=null)
+			{
+				if(!sent.isEmpty())
+				{
+					AnnotationSet allSub1 = inputAS.get("CareActSubHeading").getContained(start(sent), end(sent));
+					AnnotationSet allSub2 = inputAS.get("CareActSubHeadingContent").getContained(start(sent), end(sent));
+					AnnotationSet allSub3 = inputAS.get("CareActItalicizedHeader").getContained(start(sent), end(sent));
+					AnnotationSet allSub4 = inputAS.get("CareActItalicizedContentBody").getContained(start(sent), end(sent));
+					AnnotationSet allSub5 = inputAS.get("CareActPartChapter").getContained(start(sent), end(sent));
+					
+					for(Annotation a1:allSub1)
+					{
+						a1.getFeatures().put("IS_PART_OF", partName);
+					}
+					for(Annotation a1:allSub2)
+					{
+						a1.getFeatures().put("IS_PART_OF", partName);
+					}
+					for(Annotation a1:allSub3)
+					{
+						a1.getFeatures().put("IS_PART_OF", partName);
+					}
+					for(Annotation a1:allSub4)
+					{
+						a1.getFeatures().put("IS_PART_OF", partName);
+					}
+					for(Annotation a1:allSub5)
+					{
+						a1.getFeatures().put("IS_PART_OF", partName);
+					}
+				}
+			}
+			
+		}
+	}
+
+}

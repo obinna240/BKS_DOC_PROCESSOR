@@ -1,0 +1,90 @@
+
+Phase:PartFunctionItalics
+Input:h3 h4 h5
+Options: control = appelt debug = true
+Rule: PartFunctionItalics
+(
+{h3.class == "LegPblockFirst"}
+):CareActPartFunctionHeader
+-->
+:CareActPartFunctionHeader.CareActItalicizedHeader= {level = " ", title = :CareActPartFunctionHeader@cleanString}
+
+
+Rule: PartFunctionItalics2
+(
+{h3.class == "LegPblock"}
+):CareActPartFunctionHeader
+-->
+:CareActPartFunctionHeader.CareActItalicizedHeader= {level = " ", title = :CareActPartFunctionHeader@cleanString}
+
+Rule: CareActPartFunctionHeaderSub
+(
+{h4.class == "LegClearFix LegP1ContainerFirst"}
+):CareActPartFunctionHeaderSub
+-->
+:CareActPartFunctionHeaderSub.CareActSubHeading= {title = :CareActPartFunctionHeaderSub@cleanString, level="", containedIn=""}
+
+Rule: CareActPartFunctionHeaderSub2
+(
+{h4.class == "LegClearFix LegP1Container"}
+):CareActPartFunctionHeaderSub
+-->
+:CareActPartFunctionHeaderSub.CareActSubHeading= {title = :CareActPartFunctionHeaderSub@cleanString, level="", containedIn=""}
+
+
+Rule: CareActSubHeading
+(
+{h3.class == "LegClearFix LegP1ContainerFirst"}
+):CareActPartFunctionHeaderSub
+-->
+:CareActPartFunctionHeaderSub.CareActSubHeading= { title = :CareActPartFunctionHeaderSub@cleanString, level="", containedIn=""}
+
+Rule: CareActSubHeading
+(
+{h3.class == "LegClearFix LegP1Container"}
+):CareActPartFunctionHeaderSub
+-->
+:CareActPartFunctionHeaderSub.CareActSubHeading= {title = :CareActPartFunctionHeaderSub@cleanString, level="", containedIn=""}
+
+
+Rule: CareActPartChapter
+(
+{h3.class == "LegChapterFirst"}
+):CareActPartChapter
+-->
+:CareActPartChapter.CareActPartChapter= {level = " ", title = :CareActPartChapter@cleanString}
+
+Rule: CareActPartChapter2
+(
+{h3.class == "LegChapter"}
+):CareActPartChapter
+-->
+:CareActPartChapter.CareActPartChapter= {level = " ", title = :CareActPartChapter@cleanString}
+
+Rule: CareActPartChapterHeader
+(
+{h4.class == "LegPblockFirst"}
+):CareActPartChapterHeader
+-->
+:CareActPartChapterHeader.CareActItalicizedHeader= {level = "", title = :CareActPartChapterHeader@cleanString}
+
+Rule: CareActPartChapterHeader2
+(
+{h4.class == "LegPblock"}
+):CareActPartChapterHeader
+-->
+:CareActPartChapterHeader.CareActItalicizedHeader= {level = " ", title = :CareActPartChapterHeader@cleanString}
+
+Rule: CareActPartChapterHeaderSub
+(
+{h5.class == "LegClearFix LegP1ContainerFirst"}
+):CareActPartChapterHeaderSub
+-->
+:CareActPartChapterHeaderSub.CareActSubHeading= {level = " ", title = :CareActPartChapterHeaderSub@cleanString, containedIn="chapter"}
+
+Rule: CareActPartChapterHeaderSub2
+(
+{h5.class == "LegClearFix LegP1Container"}
+):CareActPartChapterHeaderSub
+-->
+:CareActPartChapterHeaderSub.CareActSubHeading= {level= " ", title = :CareActPartChapterHeaderSub@cleanString, containedIn="chapter"}

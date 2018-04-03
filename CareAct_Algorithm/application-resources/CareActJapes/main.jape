@@ -1,0 +1,23 @@
+MultiPhase:	CareActAnalysis
+Phases:
+IgnoreBoilerPlate
+ScheduleHeader
+CareActMainHeader
+CareActPart1
+CareActPart2
+CareActSchedulePart
+CareActPartFunction
+Care_act_table
+CareActContentParagraph
+//CareActBodyTagMover
+//CareActSubtitleAndContent
+//CareActTitleSubTitleAndContent
+ScheduleHeaderContent
+CareActHeaderContent
+ContentOfSchedulePart
+ScheduleHeaderItalicizedBody
+CareActSubHeadingContent
+CareActItalicizedContentObject
+CareActPartAndSubContent
+CareActPartContent1
+CareActChapterContent

@@ -1,0 +1,11 @@
+Phase:CareActScheduleHeader
+Input:h1 
+Options: control = appelt debug = true
+Rule: CareActSchedule
+(
+{h1.class == "LegSchedulesTitle"}
+):ScheduleHeader
+-->
+:ScheduleHeader.ScheduleHeader= {title=:ScheduleHeader@cleanString}
+
+

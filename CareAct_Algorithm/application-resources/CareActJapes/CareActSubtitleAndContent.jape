@@ -1,0 +1,17 @@
+Imports: {
+import static gate.Utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+}
+
+Phase:CareActBodyIdentifier
+Input:CareActPartFunctionHeaderSub DebateParagraph
+Options: control = appelt debug = true
+Rule: CPara
+(
+{CareActPartFunctionHeaderSub}({DebateParagraph})*
+)
+:cpara
+
+-->
+:cpara.CareActSubTitleAndContent= {Subtitle=:cpara.CareActPartFunctionHeaderSub@cleanString}
